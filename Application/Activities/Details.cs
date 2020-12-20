@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Domain;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application.Activities
@@ -25,7 +26,9 @@ namespace Application.Activities
 
             public async Task<Activity> Handle(Query request, CancellationToken cancellationToken)
             {
-                var activity = await _context.Activities.FindAsync(request.Id);
+                // var activity = await _context.Activities.FindAsync(request.Id);
+                var activity = await _context.Activities.FromSqlRaw<Activity>("spGetActivitiess {0}", request.Id)
+                .FirstOrDefaultAsync();        
 
                 return activity;
             }

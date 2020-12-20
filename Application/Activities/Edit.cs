@@ -3,6 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Persistence;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Activities
 {
@@ -20,6 +22,7 @@ namespace Application.Activities
             public string City { get; set; }
 
             public string Venue { get; set; }
+            public long TableId { get; set; }
         }
 
         public class Handler : IRequestHandler<Command>
@@ -32,23 +35,36 @@ namespace Application.Activities
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var activity = await _context.Activities.FindAsync(request.Id);
+               // var activity = await _context.Activities.FindAsync(request.Id);
 
-                if (activity == null)
-                    throw new Exception("could not find activity");
+              //  if (activity == null)
+               //     throw new Exception("could not find activity");
 
-                activity.Title = request.Title ?? activity.Title;
-                activity.Description = request.Description ?? activity.Description;
-                activity.Category = request.Category ?? activity.Category;
-                activity.Date = request.Date ?? activity.Date;
-                activity.City = request.City ?? activity.City;
-                activity.Venue = request.Venue ?? activity.Venue;
+                // activity.Title = request.Title ?? activity.Title;
+                // activity.Description = request.Description ?? activity.Description;
+                // activity.Category = request.Category ?? activity.Category;
+                // activity.Date = request.Date ?? activity.Date;
+                // activity.City = request.City ?? activity.City;
+                // activity.Venue = request.Venue ?? activity.Venue;
 
-                var success = await _context.SaveChangesAsync() > 0;
+                // var success = await _context.SaveChangesAsync() > 0;
+                SqlParameter[] param = new SqlParameter[] {
+                    new SqlParameter("@pID", request.Id) ,
+                    new SqlParameter("@pTitle", request.Title) ,
+                    new SqlParameter("@pDescription", request.Description) ,
+                    new SqlParameter("@pCategory", request.Category) ,
+                    new SqlParameter("@pDate", request.Date) ,
+                    new SqlParameter("@pCity", request.City) ,
+                    new SqlParameter("@pVenue", request.Venue) ,
+                    new SqlParameter("@pTableId", request.TableId) 
 
-                if (success) return Unit.Value;
+               };
 
-                throw new Exception("Problem saving changes");
+                 var success = await _context.Database.ExecuteSqlRawAsync("spUpdate_Activities {0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}",
+                                                param);
+                if (success !=0 )  return Unit.Value;
+
+                throw new Exception("Problem updating changes");
             }
         }
     }

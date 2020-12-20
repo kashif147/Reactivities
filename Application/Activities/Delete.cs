@@ -3,6 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Persistence;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace Application.Activities
 {
@@ -10,7 +13,8 @@ namespace Application.Activities
     {
         public class Command : IRequest
         {
-            public Guid Id { get; set; }
+            public long Id { get; set; }
+            
         }
 
         public class Handler : IRequestHandler<Command>
@@ -23,18 +27,26 @@ namespace Application.Activities
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var activity = await _context.Activities.FindAsync(request.Id);
+                //var activity = await _context.Activities.FindAsync(request.Id);
 
-                if (activity == null)
-                    throw new Exception("Could not find activity");
+                //if (activity == null)
+                  //  throw new Exception("Could not find activity");
 
-                _context.Remove(activity);
+                //_context.Remove(activity);
                 
-                var success = await _context.SaveChangesAsync() > 0;
+                //var success = await _context.SaveChangesAsync() > 0;
 
-                if (success) return Unit.Value;
+                SqlParameter[] param = new SqlParameter[] {
+                    
+                    new SqlParameter("@pTableId", request.Id) 
 
-                throw new Exception("Problem saving changes");
+               };
+                var success = await _context.Database.ExecuteSqlRawAsync("spDelete_Activities {0}",param);
+                if (success !=0 )  return Unit.Value;
+
+                //if (success) return Unit.Value;
+
+                throw new Exception("Problem Deleting Records");
             }
         }
     }
