@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Domain;
@@ -10,12 +11,14 @@ namespace Application.Activities
 {
     public class Details
     {
-        public class Query : IRequest<Activity>
+        public class Query : IRequest<List<Activity>>
         {
             public Guid Id { get; set; }
+           
         }
 
-        public class Handler : IRequestHandler<Query, Activity>
+
+        public class Handler : IRequestHandler<Query, List<Activity>>
         {
             private readonly DataContext _context;
             public Handler(DataContext context)
@@ -24,11 +27,11 @@ namespace Application.Activities
 
             }
 
-            public async Task<Activity> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<List<Activity>> Handle(Query request, CancellationToken cancellationToken)
             {
                 // var activity = await _context.Activities.FindAsync(request.Id);
-                var activity = await _context.Activities.FromSqlRaw<Activity>("spGetActivitiess {0}", request.Id)
-                .FirstOrDefaultAsync();        
+                var activity = await _context.Activities.FromSqlRaw<Activity>("uspLoadActivitybyID {0}", request.Id)
+                .ToListAsync();        
 
                 return activity;
             }

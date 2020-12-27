@@ -2,9 +2,9 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Persistence;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Persistence;
 
 namespace Application.Activities
 {
@@ -22,7 +22,8 @@ namespace Application.Activities
             public string City { get; set; }
 
             public string Venue { get; set; }
-            public long TableId { get; set; }
+
+            public int ActivityID {get; set; }
         }
 
         public class Handler : IRequestHandler<Command>
@@ -35,10 +36,11 @@ namespace Application.Activities
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-               // var activity = await _context.Activities.FindAsync(request.Id);
+                // Linq code
+                // var activity = await _context.Activities.FindAsync(request.Id);
 
-              //  if (activity == null)
-               //     throw new Exception("could not find activity");
+                // if (activity == null)
+                //     throw new Exception("could not find activity");
 
                 // activity.Title = request.Title ?? activity.Title;
                 // activity.Description = request.Description ?? activity.Description;
@@ -48,23 +50,24 @@ namespace Application.Activities
                 // activity.Venue = request.Venue ?? activity.Venue;
 
                 // var success = await _context.SaveChangesAsync() > 0;
-                SqlParameter[] param = new SqlParameter[] {
-                    new SqlParameter("@pID", request.Id) ,
-                    new SqlParameter("@pTitle", request.Title) ,
-                    new SqlParameter("@pDescription", request.Description) ,
-                    new SqlParameter("@pCategory", request.Category) ,
-                    new SqlParameter("@pDate", request.Date) ,
-                    new SqlParameter("@pCity", request.City) ,
-                    new SqlParameter("@pVenue", request.Venue) ,
-                    new SqlParameter("@pTableId", request.TableId) 
 
-               };
+                SqlParameter[] param = new SqlParameter[]{
+                    new SqlParameter("@pID", request.Id),
+                    new SqlParameter("@pTitle", request.Title),
+                    new SqlParameter("@pDescription", request.Description),
+                    new SqlParameter("@pCategory", request.Category),
+                    new SqlParameter("@pDate", request.Date),
+                    new SqlParameter("@pCity", request.City),
+                    new SqlParameter("@pVenue", request.Venue),
+                    new SqlParameter("@pActivityID",request.ActivityID)
+                };
 
-                 var success = await _context.Database.ExecuteSqlRawAsync("spUpdate_Activities {0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}",
-                                                param);
-                if (success !=0 )  return Unit.Value;
 
-                throw new Exception("Problem updating changes");
+                var rtnStatus = await _context.Database.ExecuteSqlRawAsync("uspUpdateActivity  {0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", param);
+                
+                if (rtnStatus != 0) return Unit.Value;
+
+                throw new Exception("Problem saving changes");
             }
         }
     }

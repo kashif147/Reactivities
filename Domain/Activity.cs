@@ -15,6 +15,6 @@ namespace Domain
 
          public string Venue { get; set; }
 
-         public long TableId { get; set; }
+         public int ActivityID {get; set;}
     }
 }

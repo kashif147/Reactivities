@@ -9,13 +9,14 @@ using Persistence;
 
 
 
+
 namespace Application.Activities
 {
     public class Create
     {
         public class Command : IRequest
         {
-            public Guid Id { get; set; }
+            public Guid Id { get; set; } 
             public string Title { get; set; }
 
             public string Description { get; set; }
@@ -25,6 +26,8 @@ namespace Application.Activities
             public string City { get; set; }
 
             public string Venue { get; set; }
+
+            public int ActivityID {get; set; }
         }
 
         public class Handler : IRequestHandler<Command>
@@ -37,49 +40,32 @@ namespace Application.Activities
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var activity = new Activity
-                {
-                    Id = request.Id,
-                    Title = request.Title,
-                    Description = request.Description,
-                    Category = request.Category,
-                    Date = request.Date,
-                    City = request.City,
-                    Venue = request.Venue
+                // Linq code 
+                // _context.Activities.Add(activity);
+                // var success = await _context.SaveChangesAsync( ) > 0;
+
+
+                // declaring sql parameter to give sql data types to our attributes 
+                SqlParameter[] param = new SqlParameter[]{
+                    new SqlParameter("@pID", request.Id),
+                    new SqlParameter("@pTitle", request.Title),
+                    new SqlParameter("@pDescription", request.Description),
+                    new SqlParameter("@pCategory", request.Category),
+                    new SqlParameter("@pDate", request.Date),
+                    new SqlParameter("@pCity", request.City),
+                    new SqlParameter("@pVenue", request.Venue),
+                    new SqlParameter("@pActivityID",System.Data.SqlDbType.Int){Direction = System.Data.ParameterDirection.Output}
                 };
 
-                // SqlParameter[] param = new SqlParameter[] {
-                //     new SqlParameter("@pID", request.Id) ,
-                //     new SqlParameter("@pTitle", request.Id) ,
-                //     new SqlParameter("@pDescription", request.Id) ,
-                //     new SqlParameter("@pCategory", request.Id) ,
-                //     new SqlParameter("@pDate", request.Id) ,
-                //     new SqlParameter("@pCity", request.Id) ,
-                //     new SqlParameter("@pVenue", request.Id) ,
-                //     new SqlParameter("@pTableId", request.Id) 
+                var rtnStatus = await _context.Database.ExecuteSqlRawAsync("uspCreateActivity  {0}, {1}, {2}, {3}, {4}, {5}, {6}, {7} OUT", param);
+                // Console.WriteLine(rtnStatus);
+                // Console.WriteLine(param[7].Value);
 
-                // };
+                if (rtnStatus != 0) return Unit.Value;
+
+                throw new Exception("Problem saving changes");
                 
-                // param[7].Direction =System.Data.ParameterDirection.Output;
-
-
-              //  var context = new Activities(); 
-             // _context.Database.ExecuteSqlCommand("spInsert_Activities @p0, @p1", parameters: new[] { "Bill", "Gates" });
-              var success = await _context.Database.ExecuteSqlRawAsync("spInsert_Activities {0}, {1}, {2}, {3}, {4}, {5}, {6}",
-                                                request.Id,
-                                                request.Title,request.Date, request.Description, 
-                                                request.Category, request.City, request.City) > 0;
-
-               // _context.Activities.Add(activity);
-               //var success = await _context.SaveChangesAsync( ) > 0;
-
-               // if (success) return Unit.Value;
-                if (success) return Unit.Value;
-                else return  Unit.Value;
-
-                //throw new Exception ("Problem saving changes" ); 
             }
-
         }
     }
 }

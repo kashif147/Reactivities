@@ -12,6 +12,7 @@ namespace API
     {
         public static void Main(string[] args)
         {
+            
             var host = CreateHostBuilder(args).Build();
             using(var scope = host.Services.CreateScope())
             {
@@ -19,8 +20,8 @@ namespace API
                 try
                 {
                     var context = services.GetRequiredService<DataContext>();
-                    context.Database.Migrate();
-                    Seed.SeedData(context);
+                    // context.Database.Migrate();
+                    // Seed.SeedData(context);
                 }
                 catch(Exception ex)
                 {
