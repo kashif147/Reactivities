@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Errors;
 using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +34,9 @@ namespace Application.Activities
                 // var activity = await _context.Activities.FindAsync(request.Id);
                 var activity = await _context.Activities.FromSqlRaw<Activity>("uspLoadActivitybyID {0}", request.Id)
                 .ToListAsync();        
+
+                if (activity.Count == 0)
+                    throw new RestException(HttpStatusCode.NotFound, new { activity = "Not Found" });
 
                 return activity;
             }

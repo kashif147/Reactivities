@@ -1,6 +1,9 @@
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Errors;
+using Domain;
 using MediatR;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +16,7 @@ namespace Application.Activities
         public class Command : IRequest
         {
             public Guid Id { get; set; }
-            
+
         }
 
         public class Handler : IRequestHandler<Command>
@@ -28,21 +31,25 @@ namespace Application.Activities
             {
                 // Linq Code
                 // var activity = await _context.Activities.FindAsync(request.Id);
-
-
-                // if (activity == null)
-                //     throw new Exception("Could not find activity");
-
                 // _context.Remove(activity);
-                
+
                 // var success = await _context.SaveChangesAsync() > 0;
+
+                var activity = await _context.Activities.FromSqlRaw<Activity>("uspLoadActivitybyID {0}", request.Id)
+                .ToListAsync();
+
+                if (activity.Count == 0)
+                    throw new RestException(HttpStatusCode.NotFound, new { activity = "Not Found" });
+
+
                 SqlParameter[] param = new SqlParameter[]{
-                    new SqlParameter("@pID", request.Id)
+                    new SqlParameter("@pID", request.Id),
+                    new SqlParameter("@pRowsOut",System.Data.SqlDbType.Int){Direction = System.Data.ParameterDirection.Output}
                 };
 
-                var rtnStatus = await _context.Database.ExecuteSqlRawAsync("uspDeleteActivity  {0}", param);
+                await _context.Database.ExecuteSqlRawAsync("uspDeleteActivity  {0}, {1} OUT", param);
                 
-                if (rtnStatus != 0) return Unit.Value;
+                if (Int32.Parse(param[1].Value.ToString()) > 0) return Unit.Value; 
 
                 throw new Exception("Problem saving changes");
             }

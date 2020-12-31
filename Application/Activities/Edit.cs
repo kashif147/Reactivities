@@ -1,6 +1,10 @@
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Errors;
+using Domain;
+using FluentValidation;
 using MediatR;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -23,9 +27,21 @@ namespace Application.Activities
 
             public string Venue { get; set; }
 
-            public int ActivityID {get; set; }
+            public int ActivityID { get; set; }
         }
 
+        public class CommandValidator : AbstractValidator<Command>
+        {
+            public CommandValidator()
+            {
+                RuleFor(x => x.Title).NotEmpty();
+                RuleFor(x => x.Description).NotEmpty();
+                RuleFor(x => x.Category).NotEmpty();
+                RuleFor(x => x.Date).NotEmpty();
+                RuleFor(x => x.City).NotEmpty();
+                RuleFor(x => x.Venue).NotEmpty();
+            }
+        }
         public class Handler : IRequestHandler<Command>
         {
             private readonly DataContext _context;
@@ -36,21 +52,13 @@ namespace Application.Activities
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                // Linq code
-                // var activity = await _context.Activities.FindAsync(request.Id);
 
-                // if (activity == null)
-                //     throw new Exception("could not find activity");
+                var activity = await _context.Activities.FromSqlRaw<Activity>("uspLoadActivitybyID {0}", request.Id)
+                                               .ToListAsync();
 
-                // activity.Title = request.Title ?? activity.Title;
-                // activity.Description = request.Description ?? activity.Description;
-                // activity.Category = request.Category ?? activity.Category;
-                // activity.Date = request.Date ?? activity.Date;
-                // activity.City = request.City ?? activity.City;
-                // activity.Venue = request.Venue ?? activity.Venue;
-
-                // var success = await _context.SaveChangesAsync() > 0;
-
+                if (activity.Count == 0)
+                    throw new RestException(HttpStatusCode.NotFound, new { activity = "Not Found" });
+                    
                 SqlParameter[] param = new SqlParameter[]{
                     new SqlParameter("@pID", request.Id),
                     new SqlParameter("@pTitle", request.Title),
@@ -62,11 +70,9 @@ namespace Application.Activities
                     new SqlParameter("@pActivityID",request.ActivityID)
                 };
 
-
                 var rtnStatus = await _context.Database.ExecuteSqlRawAsync("uspUpdateActivity  {0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", param);
-                
-                if (rtnStatus != 0) return Unit.Value;
 
+                if (rtnStatus != 0) return Unit.Value;
                 throw new Exception("Problem saving changes");
             }
         }
