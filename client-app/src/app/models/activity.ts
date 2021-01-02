@@ -3,7 +3,7 @@ export interface IActivity {
     title: string;
     description: string;
     category: string;
-    date: Date;   
+    date: Date;
     city: string;
     venue: string;
 }
@@ -22,10 +22,10 @@ export class ActivityFormValues implements IActivityFormValues {
     city: string = '';
     venue: string = '';
 
-    constructor(init?: IActivityFormValues){
-        if(init && init.date){
-            init.time = init.date
-        }
+    constructor(init?: IActivityFormValues) {
+        if (init && init.date) {
+            init.time = init.date;
+        }  
         Object.assign(this, init);
     }
 }

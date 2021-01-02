@@ -16,7 +16,6 @@ const ActivityDashboard: React.FC = () => {
   if (activityStore.loadingInitial)
     return <LoadingComponent content='Loading activities' />;
 
-
   return (
     <Grid>
       <Grid.Column width={10}>

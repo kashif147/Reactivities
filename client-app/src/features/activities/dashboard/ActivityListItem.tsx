@@ -1,12 +1,10 @@
 import React from 'react';
-import { Item, Button,  Segment, Icon } from "semantic-ui-react";
-import { Link } from "react-router-dom";
-import { IActivity } from "../../../app/models/activity";
-import { format } from "date-fns";
+import { Item, Button, Segment, Icon } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
+import { IActivity } from '../../../app/models/activity';
+import {format} from 'date-fns';
 
-export const ActivityListItem: React.FC<{ activity: IActivity }> = ({
-  activity,
-}) => {
+const ActivityListItem: React.FC<{ activity: IActivity }> = ({ activity }) => {
   return (
     <Segment.Group>
       <Segment>
@@ -15,7 +13,7 @@ export const ActivityListItem: React.FC<{ activity: IActivity }> = ({
             <Item.Image size='tiny' circular src='/assets/user.png' />
             <Item.Content>
               <Item.Header as='a'>{activity.title}</Item.Header>
-              <Item.Description>Hosted by Kashif</Item.Description>
+              <Item.Description>Hosted by Bob</Item.Description>
             </Item.Content>
           </Item>
         </Item.Group>

@@ -1,12 +1,12 @@
-import React from "react";
-import { FieldRenderProps } from "react-final-form";
-import { Form, FormFieldProps, Label } from "semantic-ui-react";
+import React from 'react';
+import { FieldRenderProps } from 'react-final-form';
+import { FormFieldProps, Form, Label } from 'semantic-ui-react';
 
 interface IProps
   extends FieldRenderProps<string, HTMLElement>,
     FormFieldProps {}
 
-export const TextInput: React.FC<IProps> = ({
+const TextInput: React.FC<IProps> = ({
   input,
   width,
   type,
