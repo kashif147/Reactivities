@@ -6,6 +6,7 @@ import ActivityStore from '../../../app/stores/activityStore';
 import LoadingComponent from '../../../app/layout/LoadingComponent';
 
 const ActivityDashboard: React.FC = () => {
+
   const activityStore = useContext(ActivityStore);
 
   useEffect(() => {
@@ -22,7 +23,7 @@ const ActivityDashboard: React.FC = () => {
         <ActivityList />
       </Grid.Column>
       <Grid.Column width={6}>
-        <h2>Activity filters </h2>
+        <h2>Activity filters</h2>
       </Grid.Column>
     </Grid>
   );
