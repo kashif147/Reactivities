@@ -20,7 +20,6 @@ const ActivityList: React.FC = () => {
                 <ActivityListItem key={activity.id} activity={activity} />
               ))}
             </Item.Group>
-
         </Fragment>
       ))}
     </Fragment>
