@@ -15,6 +15,7 @@ import ActivityDetails from '../../features/activities/details/ActivityDetails';
 import NotFound from './NotFound';
 import {ToastContainer} from 'react-toastify';
 
+
 const App: React.FC<RouteComponentProps> = ({ location }) => {
   return (
     <Fragment>
