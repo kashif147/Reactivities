@@ -27,8 +27,8 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("ActivityID")
-                        .HasColumnType("int");
+                    // b.Property<int>("ActivityID")
+                    //     .HasColumnType("int");
 
                     b.Property<string>("Category")
                         .HasColumnType("nvarchar(max)");

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Domain
 {
@@ -16,5 +17,7 @@ namespace Domain
          public string Venue { get; set; }
 
          public int ActivityID {get; set;}
+
+         public virtual ICollection<UserActivity> UserActivities { get; set; }
     }
 }

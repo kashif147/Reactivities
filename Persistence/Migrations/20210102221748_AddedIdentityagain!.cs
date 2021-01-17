@@ -7,41 +7,41 @@ namespace Persistence.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            // migrationBuilder.AlterColumn<string>(
-            //     name: "Name",
-            //     table: "Values",
-            //     type: "nvarchar(max)",
-            //     nullable: true,
-            //     oldClrType: typeof(string),
-            //     oldType: "TEXT",
-            //     oldNullable: true);
+            migrationBuilder.AlterColumn<string>(
+                name: "Name",
+                table: "Values",
+                type: "nvarchar(max)",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "TEXT",
+                oldNullable: true);
 
-            // migrationBuilder.AlterColumn<int>(
-            //     name: "Id",
-            //     table: "Values",
-            //     type: "int",
-            //     nullable: false,
-            //     oldClrType: typeof(int),
-            //     oldType: "INTEGER")
-            //     .Annotation("SqlServer:Identity", "1, 1");
+            migrationBuilder.AlterColumn<int>(
+                name: "Id",
+                table: "Values",
+                type: "int",
+                nullable: false,
+                oldClrType: typeof(int),
+                oldType: "INTEGER")
+                .Annotation("SqlServer:Identity", "1, 1");
 
-            // migrationBuilder.CreateTable(
-            //     name: "Activities",
-            //     columns: table => new
-            //     {
-            //         Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-            //         Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-            //         Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-            //         Category = table.Column<string>(type: "nvarchar(max)", nullable: true),
-            //         Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-            //         City = table.Column<string>(type: "nvarchar(max)", nullable: true),
-            //         Venue = table.Column<string>(type: "nvarchar(max)", nullable: true),
-            //         ActivityID = table.Column<int>(type: "int", nullable: false)
-            //     },
-            //     constraints: table =>
-            //     {
-            //         table.PrimaryKey("PK_Activities", x => x.Id);
-            //     });
+            migrationBuilder.CreateTable(
+                name: "Activities",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Venue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    // ActivityID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Activities", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
