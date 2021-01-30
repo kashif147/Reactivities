@@ -1,3 +1,5 @@
+// import { Image } from 'semantic-ui-react';
+// import { Comment } from 'semantic-ui-react';
 export interface IActivity {
     id: string;
     title: string;
@@ -9,6 +11,16 @@ export interface IActivity {
     isGoing: boolean;
     isHost: boolean;
     attendees: IAttendee[]; 
+    comments: IComment[];
+}
+
+export interface IComment {
+    id: string;
+    createdAt: Date;
+    body: string;
+    usernmae: string;
+    displayName: string;
+    image: string;
 }
 
 export interface IActivityFormValues extends Partial<IActivity> {
