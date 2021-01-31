@@ -1,5 +1,10 @@
 // import { Image } from 'semantic-ui-react';
 // import { Comment } from 'semantic-ui-react';
+
+export interface IActivitisEnvelope {
+    activities: IActivity[];
+    activityCount: number;
+}
 export interface IActivity {
     id: string;
     title: string;
